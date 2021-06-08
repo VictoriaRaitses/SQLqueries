@@ -1,5 +1,5 @@
 
- CREATE TABLE cities
+ create TABLE cities
             (
     name       VARCHAR(50),
     country    VARCHAR(50),
@@ -7,50 +7,50 @@
     area       INTEGER
 );
 
--- put data in the database
-    INSERT INTO cities (name, country, population, area)
-    VALUES ('Tokyo', 'Japan', 38505000, 8223);
+-- put data in the databases table
+    insert into cities (name, country, population, area)
+    values ('Tokyo', 'Japan', 38505000, 8223);
 
-    INSERT INTO cities (name, country, population, area)
-    VALUES ('Delhi', 'India', 28125000, 2240),
+    insert into cities (name, country, population, area)
+    values ('Delhi', 'India', 28125000, 2240),
        ('Shanghai', 'China', 22125000, 4015),
                ('Sao Paulo', 'Brazil', 20935000, 3043);
 
--- take all info from database
-    SELECT *
-    FROM cities;
+-- take all info from table
+    select *
+    from cities;
 
-    SELECT name, country
-    FROM cities;
+    select name, country
+    from cities;
 
     select name, country, population / area as density
     from cities;
 
 -- concatenation ||
-    SELECT name || country
-    FROM cities;
+    select name || country
+    from cities;
 
-    SELECT name || ', ' || country
-    FROM cities;
+    select name || ', ' || country
+    from cities;
 
-    SELECT name || ', ' || country AS location
-    FROM cities;
+    select name || ', ' || country as location
+    from cities;
 
-    SELECT CONCAT(name, country) AS location
-    FROM cities;
+    select concat(name, country) as location
+    from cities;
 
-    SELECT CONCAT(name, ', ', country) AS location
-    FROM cities;
+    select concat(name, ', ', country) as location
+    from cities;
 
-    SELECT CONCAT(UPPER(name), ', ', UPPER(country)) AS location
-    FROM cities;
+    select concat(upper(name), ', ', upper(country)) as location
+    from cities;
 
-    SELECT UPPER(CONCAT(name, ', ', country)) AS location
-    FROM cities;
+    select upper(concat(name, ', ', country)) as location
+    from cities;
 
-    SELECT name, area
-    FROM cities
-    WHERE area between 200 and 4000;
+    select name, area
+    from cities
+    where area between 200 and 4000;
 
     update cities
     set population = 39505000
@@ -67,143 +67,147 @@
     drop table cities;
 
 --------------------------------------------------------------------------
-    CREATE TABLE users
+    create TABLE users
             (
                     id       SERIAL PRIMARY KEY,
                     username VARCHAR(50)
 );
 
-    INSERT INTO users (username)
-    VALUES ('monahan93'),
-       ('pferrer'),
-               ('si93onis'),
-               ('99stroman');
+    insert into users (username)
+    values ('monahan93'),
+           ('pferrer'),
+           ('si93onis'),
+           ('99stroman');
 
-    SELECT *
-    FROM users;
+    select *
+    from users;
 ------------------------------------------------------------------------
-    CREATE TABLE photos
+    create TABLE photos
             (
                     id      SERIAL PRIMARY KEY,
                     url     VARCHAR(200),
     user_id INTEGER REFERENCES users (id)
 );
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('http://one.jpg', 4);
+    insert into photos (url, user_id)
+    values ('http://one.jpg', 4);
 
-    SELECT *
-    FROM photos;
+    select *
+    from photos;
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('http://two.jpg', 1),
+    insert into photos (url, user_id)
+    values ('http://two.jpg', 1),
            ('http://25.jpg', 1),
            ('http://36.jpg', 1),
            ('http://754.jpg', 2),
            ('http://35.jpg', 3),
            ('http://256.jpg', 4);
 
-    SELECT *
-    FROM photos;
+    select *
+    from photos;
 
-    SELECT *
-    FROM photos
-    WHERE user_id = 4;
+    select *
+    from photos
+    where user_id = 4;
 
 -- take some info from photos and join some info from another table
-    SELECT url, username
-    FROM photos
-    JOIN users ON users.id = photos.user_id;
+    select url, username
+    from photos
+    join users on users.id = photos.user_id;
 -----------------------------------36-------------------------------------------
-    SELECT *
-    FROM users;
+    select *
+    from users;
 
 -- This results in an error
-    INSERT INTO photos (url, user_id)
-    VALUES ('http://jpg', 9999);
+    insert into photos (url, user_id)
+    values ('http://jpg', 9999);
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('http://jpg', NULL);
+    insert into photos (url, user_id)
+    values ('http://jpg', null);
 
-    SELECT *
-    FROM photos;
+    select *
+    from photos;
 
     drop table photos;
 ----------------------------38--------------------------
-    CREATE TABLE photos
+-- The onDelete('cascade') means that when the row is deleted
+--, it will delete all it's references and attached data too.
+    create TABLE photos
             (
                     id      SERIAL PRIMARY KEY,
                     url     VARCHAR(200),
     user_id INTEGER REFERENCES users (id) on delete cascade
 );
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('http:/one.jpg', 4),
-       ('http:/two.jpg', 1),
-               ('http:/25.jpg', 1),
-               ('http:/36.jpg', 1),
-               ('http:/754.jpg', 2),
-               ('http:/35.jpg', 3),
-               ('http:/256.jpg', 4);
+    insert into photos (url, user_id)
+    values ('http:/one.jpg', 4),
+           ('http:/two.jpg', 1),
+           ('http:/25.jpg', 1),
+           ('http:/36.jpg', 1)
+           ('http:/754.jpg', 2),
+           ('http:/35.jpg', 3),
+           ('http:/256.jpg', 4);
 
-    DELETE
-    FROM users
-    WHERE id = 1;
+    delete
+    from users
+    where id = 1;
 
-    SELECT *
-    FROM photos;
+    select *
+    from photos;
 ------------40----------------------------------------------------------
 
-    DROP TABLE users;
+    drop table users;
 
-    CREATE TABLE photos
+-- A foreign key with "set null on delete" means that if a record in the parent table is deleted
+-- , then the corresponding records in the child table will have the foreign key fields set to NULL.
+    create TABLE photos
             (
                     id      SERIAL PRIMARY KEY,
                     url     VARCHAR(200),
-    user_id INTEGER REFERENCES users (id) ON DELETE SET NULL
+    user_id INTEGER REFERENCES users (id) ON delete SET NULL
 );
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('http:/one.jpg', 4),
-       ('http:/754.jpg', 2),
-               ('http:/35.jpg', 3),
-               ('http:/256.jpg', 4);
+    insert into photos (url, user_id)
+    values ('http:/one.jpg', 4),
+           ('http:/754.jpg', 2),
+           ('http:/35.jpg', 3),
+           ('http:/256.jpg', 4);
 
-    DELETE
-    FROM users
-    WHERE id = 4;
+    delete
+    from users
+    where id = 4;
 
-    SELECT *
-    FROM photos;
+    select *
+    from photos;
 
 ---------------------------42-------------------------------------
 
-    CREATE TABLE users
+    create TABLE users
             (
                     id       SERIAL PRIMARY KEY,
                     username VARCHAR(50)
 );
 
-    CREATE TABLE photos
+    create TABLE photos
             (
                     id      SERIAL PRIMARY KEY,
                     url     VARCHAR(200),
-    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE
+    user_id INTEGER REFERENCES users (id) ON delete CASCADE
 );
 
-    CREATE TABLE comments
+    create TABLE comments
             (
                     id       SERIAL PRIMARY KEY,
                     contents VARCHAR(240),
-    user_id  INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    photo_id INTEGER REFERENCES photos (id) ON DELETE CASCADE
+    user_id  INTEGER REFERENCES users (id) ON delete CASCADE,
+    photo_id INTEGER REFERENCES photos (id) ON delete CASCADE
 );
 
-    INSERT INTO users (username)
-    VALUES ('Reyna.Marvin');
+    insert into users (username)
+    values ('Reyna.Marvin');
 
-    INSERT INTO comments (contents, user_id, photo_id)
-    VALUES ('Quo velit iusto ducimus quos a incidunt nesciunt facilis.', 2, 4);
+    insert into comments (contents, user_id, photo_id)
+    values ('Quo velit iusto ducimus quos a incidunt nesciunt facilis.', 2, 4);
 
     select *
     from users;
@@ -220,16 +224,16 @@
     join photos on photos.id = comments.photo_id;
 -------------------------------------49-------------------------------------------
 
-    INSERT INTO photos (url, user_id)
-    VALUES ('https://banner.jpg', NULL);
+    insert into photos (url, user_id)
+    values ('https://banner.jpg', null);
 
     select url, username
     from photos
     join users on users.id = photos.user_id;
 -----------------------------52------------------------------------------------------
 
-    INSERT INTO users (username)
-    VALUES ('Nicole');
+    insert into users (username)
+    values ('Nicole');
 
     select url, username
     from photos
@@ -295,13 +299,13 @@
     drop table comments, photos, users;
 -------------------------------75--------------------------------------------
 
-    CREATE TABLE users
+    create TABLE users
             (
                     id         SERIAL PRIMARY KEY,
                     first_name VARCHAR,
                     last_name  VARCHAR
             );
-    CREATE TABLE products
+    create TABLE products
             (
                     id         SERIAL PRIMARY KEY,
                     name       VARCHAR,
@@ -309,7 +313,12 @@
                     price      INTEGER,
                     weight     INTEGER
             );
-    CREATE TABLE orders
+
+--A FOREIGN KEY (REFERENCES) is a field (or collection of fields) in one table
+--, that refers to the PRIMARY KEY in another table. The table with the foreign key is called the child table
+--, and the table with the primary key is called the referenced or parent table.
+
+    create TABLE orders
             (
                     id         SERIAL PRIMARY KEY,
                     user_id    INTEGER REFERENCES users (id),
@@ -318,17 +327,17 @@
 );
 
 
-    INSERT INTO users (first_name, last_name)
-    VALUES ('Iva', 'Lindgren'),
-       ('Ignatius', 'Johns');
+    insert into users (first_name, last_name)
+    values ('Iva', 'Lindgren'),
+           ('Ignatius', 'Johns');
 
 
-    INSERT INTO products (name, department, price, weight)
-    VALUES ('Practical Fresh Shirt', 'Toys', 876.00, 3);
+    insert into products (name, department, price, weight)
+    values ('Practical Fresh Shirt', 'Toys', 876.00, 3);
 
 
-    INSERT INTO orders (user_id, product_id, paid)
-    VALUES (41, 100, true);
+    insert into orders (user_id, product_id, paid)
+    values (41, 100, true);
 
 ---------------------------------------76----------------------------------
 
@@ -365,6 +374,12 @@
     limit 5;
 -------------------86-----------------------------------
 
+--DESC means sorting the selected data in descending order;
+
+--The SQL UNION ALL operator is used to combine the result sets of 2 or more SELECT statements
+--. It does not remove duplicate rows between the various SELECT statements (all rows are returned)
+--. Each SELECT statement within the UNION ALL must have the same number of fields
+-- in the result sets with similar data types.
         (
     select *
     from products
@@ -450,7 +465,7 @@
     from orders
     group by user_id;
 -----------------------------------------99-------------------------------
-
+-- The AVG() function returns the average value of a numeric column.
     select avg(order_count)
     from (
             select user_id, count(*) as order_count
@@ -525,7 +540,7 @@
     from products as p1;
 
     select (
-            select max(price)
+    select max(price)
     from products
        ) / (
     select avg(price)
@@ -574,7 +589,7 @@
 ------distinct - find non-duplicate.(work only with single argument)
     select distinct department from products;
 
-    SELECT ('1 D 20 H 30 M 45 S'::INTERVAL) - ('1 D'::INTERVAL);
+    select ('1 D 20 H 30 M 45 S'::INTERVAL) - ('1 D'::INTERVAL);
 
     select
             ('11-20-1980 1:23 AM EST'::timestamp with time zone)
